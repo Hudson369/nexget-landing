@@ -52,26 +52,26 @@
             }
 
             try {
-                // آدرس سرور پایتون خودت را اینجا بگذار (مثلا آی پی سرور یا دامنه بک‌اند)
+                // ارسال درخواست به سرور پایتون با هدرِ صحیحِ X-API-Key
                 const response = await fetch('http://82.115.24.70:8000/payment/request', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-secret-key': 'NexGet_Secure_Secret_Key_2026_AmirHossein'
+                        'X-API-Key': 'NexGet_Secure_Secret_Key_2026_AmirHossein'
                     },
                     body: JSON.stringify({
                         phone: phone,
-                        fingerprint: fingerprint,
-                        amount: 690000
+                        fingerprint: fingerprint
                     })
                 });
+
                 const data = await response.json();
 
                 if (data.success && data.payment_url) {
-                    // هدایت کاربر به درگاه زرین‌پال با ساب‌دامنه اختصاصی
+                    // هدایت کاربر به درگاه زرین‌پال
                     window.location.href = data.payment_url;
                 } else {
-                    alert('خطا در ایجاد تراکنش: ' + (data.error || 'ناشناخته'));
+                    alert('خطا در ایجاد تراکنش: ' + (data.detail || data.error || 'ناشناخته'));
                 }
             } catch (err) {
                 alert('خطا در ارتباط با سرور پرداخت.');
