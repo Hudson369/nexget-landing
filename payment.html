@@ -3,83 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="referrer"
+        content="strict-origin-when-cross-origin"
+    >
+
     <title>در حال انتقال به درگاه پرداخت...</title>
+
     <style>
         body {
             background-color: #12161A;
             color: #ffffff;
             font-family: Tahoma, sans-serif;
+
             display: flex;
             justify-content: center;
             align-items: center;
+
             height: 100vh;
             margin: 0;
         }
+
         .box {
             text-align: center;
         }
+
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
+
             width: 50px;
             height: 50px;
+
             border-radius: 50%;
+
             border-left-color: #00F0FF;
+
             animation: spin 1s linear infinite;
+
             margin: 0 auto 20px auto;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #9CA3AF;
         }
     </style>
 </head>
+
 <body>
+
     <div class="box">
+
         <div class="spinner"></div>
-        <h3>در حال اتصال به درگاه پرداخت امن...</h3>
-        <p>لطفاً چند لحظه صبر کنید...</p>
+
+        <h3>
+            در حال اتصال به درگاه پرداخت امن...
+        </h3>
+
+        <p>
+            لطفاً چند لحظه صبر کنید...
+        </p>
+
     </div>
 
     <script>
+
         async function startPayment() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const phone = urlParams.get('phone');
-            const fingerprint = urlParams.get('fingerprint');
+
+            const urlParams =
+                new URLSearchParams(window.location.search);
+
+            const phone =
+                urlParams.get('phone');
+
+            const fingerprint =
+                urlParams.get('fingerprint');
+
 
             if (!phone || !fingerprint) {
-                alert('اطلاعات پرداخت ناقص است.');
+
+                alert(
+                    'اطلاعات پرداخت ناقص است.'
+                );
+
                 return;
             }
 
+
             try {
-                // ارسال درخواست به سرور پایتون با هدرِ صحیحِ X-API-Key
-                const response = await fetch('http://82.115.24.70:8000/payment/request', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-API-Key': 'NexGet_Secure_Secret_Key_2026_AmirHossein'
-                    },
-                    body: JSON.stringify({
-                        phone: phone,
-                        fingerprint: fingerprint
-                    })
-                });
 
-                const data = await response.json();
+                /*
+                 * مهم:
+                 * API Key نباید داخل این فایل باشد.
+                 *
+                 * این endpoint را در Backend به صورت
+                 * مخصوص صفحه وب پرداخت ایجاد می‌کنیم.
+                 */
 
-                if (data.success && data.payment_url) {
-                    // هدایت کاربر به درگاه زرین‌پال
-                    window.location.href = data.payment_url;
-                } else {
-                    alert('خطا در ایجاد تراکنش: ' + (data.detail || data.error || 'ناشناخته'));
+                const response = await fetch(
+                    'https://callback.nexget.pro/payment/request-web',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            phone: phone,
+                            fingerprint: fingerprint
+                        })
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    data.success &&
+                    data.payment_url
+                ) {
+
+                    /*
+                     * انتقال به Custom Payment Domain
+                     * زرین‌پال
+                     */
+
+                    window.location.href =
+                        data.payment_url;
+
+                    return;
                 }
+
+
+                alert(
+                    'خطا در ایجاد تراکنش: ' +
+                    (
+                        data.detail ||
+                        data.error ||
+                        data.message ||
+                        'خطای ناشناخته'
+                    )
+                );
+
             } catch (err) {
-                alert('خطا در ارتباط با سرور پرداخت.');
-                console.error(err);
+
+                console.error(
+                    'Payment Error:',
+                    err
+                );
+
+                alert(
+                    'خطا در ارتباط با سرور پرداخت.'
+                );
             }
         }
 
+
         startPayment();
+
     </script>
+
 </body>
 </html>
