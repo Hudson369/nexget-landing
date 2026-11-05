@@ -1,0 +1,15 @@
+
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.nexget.app",
+      "sha256_cert_fingerprints": [
+        "38:1C:48:6C:FD:5D:88:9C:71:28:01:1B:D9:F6:49:05:6E:B5:40:C9:EE:84:19:ED:26:30:95:03:80:1D:76:0B"
+      ]
+    }
+  }
+]
